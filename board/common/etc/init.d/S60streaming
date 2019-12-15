@@ -1,0 +1,35 @@
+#!/bin/sh
+# /etc/init.d/streaming
+
+### BEGIN INIT INFO
+# Provides:          streaming
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Simple script to start a program at boot
+# Description:       Streams over the local network
+### END INIT INFO
+
+case "$1" in
+	start)
+		IP=`/sbin/ifconfig wlan0 | grep Mask | awk '{print $2}'| cut -f2 -d:`
+
+		echo "Starting streaming on $IP:5001"
+
+		nohup raspivid -n -ih -t 0 -rot 0 -w 1640 -h 922 -fps 30 -ex auto -awb greyworld -drc medium -b 1000000 -a 4 -a "%d-%m-%Y %X" -o - | ncat -lkv4 5001 &>/dev/null &
+	;;
+	stop)
+		echo "Stopping streaming"
+
+		killall raspivid
+		killall ncat
+	;;
+	*)
+		echo "Usage: /etc/init.d/noip {start|stop}"
+
+		exit 1
+	;;
+esac
+
+exit 0

@@ -1,0 +1,13 @@
+--- buildroot/board/raspberrypi0w/genimage-raspberrypi0w.cfg	2019-12-15 01:30:06.780360896 +0100
++++ buildroot/board/raspberrypi0w/genimage-raspberrypi0w.cfg	2019-12-11 23:21:16.251825000 +0100
+@@ -5,8 +5,8 @@
+       "rpi-firmware/bootcode.bin",
+       "rpi-firmware/cmdline.txt",
+       "rpi-firmware/config.txt",
+-      "rpi-firmware/fixup.dat",
+-      "rpi-firmware/start.elf",
++      "rpi-firmware/fixup_x.dat",
++      "rpi-firmware/start_x.elf",
+       "rpi-firmware/overlays",
+       "zImage"
+     }

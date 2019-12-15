@@ -1,0 +1,7 @@
+kernel=zImage
+
+disable_overscan=1
+
+gpu_mem=128
+start_x=1
+

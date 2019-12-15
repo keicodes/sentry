@@ -1,0 +1,433 @@
+diff -Naru rpi-userland/0001-Add-.pc-files-for-the-OpenGLESv2-EGL-and-bcm_host-li.patch rpi-userland2/0001-Add-.pc-files-for-the-OpenGLESv2-EGL-and-bcm_host-li.patch
+--- buildroot/package/rpi-userland/0001-Add-.pc-files-for-the-OpenGLESv2-EGL-and-bcm_host-li.patch	2019-12-14 23:47:45.428115000 +0100
++++ buildroot/package/rpi-userland/0001-Add-.pc-files-for-the-OpenGLESv2-EGL-and-bcm_host-li.patch	1970-01-01 01:00:00.000000000 +0100
+@@ -1,107 +0,0 @@
+-From 4824be8986c2b6ef0b0bd2b32bc99c4ba6406640 Mon Sep 17 00:00:00 2001
+-From: "Yann E. MORIN" <yann.morin.1998@free.fr>
+-Date: Sat, 24 Jan 2015 19:44:14 +0100
+-Subject: [PATCH] Add .pc files for the OpenGLESv2, EGL and bcm_host libraries
+-
+-Those pkg-config files make it easier for Qt5 to find those libraries
+-and the appropriate link flags.
+-
+-Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+-Signed-off-by: "Yann E. MORIN" <yann.morin.1998@free.fr>
+-
+-[Rebased for rpi-userland-a1b89e91f393c7134b4cdc36431f863bb3333163]
+-Signed-off-by: Peter Seiderer <ps.report@gmx.net>
+----
+- host_applications/linux/libs/bcm_host/CMakeLists.txt |  4 ++++
+- host_applications/linux/libs/bcm_host/bcm_host.pc.in | 10 ++++++++++
+- interface/khronos/CMakeLists.txt                     |  8 ++++++++
+- interface/khronos/egl/egl.pc.in                      | 11 +++++++++++
+- interface/khronos/glxx/glesv2.pc.in                  | 10 ++++++++++
+- 5 files changed, 43 insertions(+)
+- create mode 100644 host_applications/linux/libs/bcm_host/bcm_host.pc.in
+- create mode 100644 interface/khronos/egl/egl.pc.in
+- create mode 100644 interface/khronos/glxx/glesv2.pc.in
+-
+-diff --git a/host_applications/linux/libs/bcm_host/CMakeLists.txt b/host_applications/linux/libs/bcm_host/CMakeLists.txt
+-index 1edf50a..1f29ead 100644
+---- a/host_applications/linux/libs/bcm_host/CMakeLists.txt
+-+++ b/host_applications/linux/libs/bcm_host/CMakeLists.txt
+-@@ -20,3 +20,7 @@ target_link_libraries(bcm_host vcos vchostif)
+- 
+- install(TARGETS bcm_host DESTINATION lib)
+- 
+-+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/bcm_host.pc.in"
+-+  "${CMAKE_CURRENT_BINARY_DIR}/bcm_host.pc" @ONLY)
+-+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/bcm_host.pc"
+-+  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig")
+-diff --git a/host_applications/linux/libs/bcm_host/bcm_host.pc.in b/host_applications/linux/libs/bcm_host/bcm_host.pc.in
+-new file mode 100644
+-index 0000000..d40d350
+---- /dev/null
+-+++ b/host_applications/linux/libs/bcm_host/bcm_host.pc.in
+-@@ -0,0 +1,10 @@
+-+prefix=/usr
+-+exec_prefix=${prefix}
+-+libdir=${exec_prefix}/lib
+-+includedir=${prefix}/include
+-+
+-+Name: bcm_host
+-+Description: Broadcom VideoCore host API library
+-+Version: 1
+-+Libs: -L${libdir} -lbcm_host -lvcos -lvchiq_arm
+-+Cflags: -I${includedir} -I${includedir}/interface/vmcs_host/linux -I${includedir}/interface/vcos/pthreads -DUSE_VCHIQ_ARM
+-diff --git a/interface/khronos/CMakeLists.txt b/interface/khronos/CMakeLists.txt
+-index 4231af4..2844ebd 100644
+---- a/interface/khronos/CMakeLists.txt
+-+++ b/interface/khronos/CMakeLists.txt
+-@@ -74,6 +74,14 @@ target_link_libraries(OpenVG EGL)
+- 
+- install(TARGETS EGL GLESv2 OpenVG WFC khrn_client DESTINATION lib)
+- install(TARGETS EGL_static GLESv2_static khrn_static DESTINATION lib)
+-+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/egl/egl.pc.in"
+-+  "${CMAKE_CURRENT_BINARY_DIR}/egl/egl.pc" @ONLY)
+-+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/egl/egl.pc"
+-+  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig")
+-+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/glxx/glesv2.pc.in"
+-+  "${CMAKE_CURRENT_BINARY_DIR}/glxx/glesv2.pc" @ONLY)
+-+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/glxx/glesv2.pc"
+-+  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig")
+- 
+- # recommended names to use to avoid conflicts with mesa libs
+- add_library(brcmEGL ${SHARED} ${EGL_SOURCE})
+-diff --git a/interface/khronos/egl/egl.pc.in b/interface/khronos/egl/egl.pc.in
+-new file mode 100644
+-index 0000000..5868706
+---- /dev/null
+-+++ b/interface/khronos/egl/egl.pc.in
+-@@ -0,0 +1,11 @@
+-+prefix=@CMAKE_INSTALL_PREFIX@
+-+exec_prefix=${prefix}
+-+libdir=${exec_prefix}/lib
+-+includedir=${prefix}/include
+-+
+-+Name: egl
+-+Description: RasberryPi implementation of EGL
+-+Version: 10
+-+Libs: -L${libdir} -lEGL -lGLESv2 -lbcm_host -lvchostif
+-+Cflags: -I${includedir}/ -I${includedir}/interface/vcos/pthreads/ \
+-+        -I${includedir}/interface/vmcs_host/linux/
+-diff --git a/interface/khronos/glxx/glesv2.pc.in b/interface/khronos/glxx/glesv2.pc.in
+-new file mode 100644
+-index 0000000..2f58eed
+---- /dev/null
+-+++ b/interface/khronos/glxx/glesv2.pc.in
+-@@ -0,0 +1,10 @@
+-+prefix=@CMAKE_INSTALL_PREFIX@
+-+exec_prefix=${prefix}
+-+libdir=${exec_prefix}/lib
+-+includedir=${prefix}/include
+-+
+-+Name: glesv2
+-+Description: RasberryPi implementation of OpenGL ESv2
+-+Version: 2.0
+-+Libs: -L${libdir} -lGLESv2
+-+Cflags: -I${includedir}/
+--- 
+-2.8.1
+-
+diff -Naru rpi-userland/0002-interface-remove-faulty-assert-to-make-weston-happy-.patch rpi-userland2/0002-interface-remove-faulty-assert-to-make-weston-happy-.patch
+--- buildroot/package/rpi-userland/0002-interface-remove-faulty-assert-to-make-weston-happy-.patch	2019-12-14 23:47:45.428115000 +0100
++++ buildroot/package/rpi-userland/0002-interface-remove-faulty-assert-to-make-weston-happy-.patch	1970-01-01 01:00:00.000000000 +0100
+@@ -1,35 +0,0 @@
+-From a126ee5a3235792abb58daffd9d4b3e1012f675b Mon Sep 17 00:00:00 2001
+-From: "Yann E. MORIN" <yann.morin.1998@free.fr>
+-Date: Sat, 24 Jan 2015 22:07:19 +0100
+-Subject: [PATCH] interface: remove faulty assert() to make weston happy at
+- runtime
+-
+-This was removed after a discussion on IRC with the weston guys
+-('daniels' on irc.freenode.net/#wayland).
+-
+-Upstream status: no, will be pushed by weston guys later.
+-If not, I'll do it.
+-
+-Signed-off-by: "Yann E. MORIN" <yann.morin.1998@free.fr>
+-
+-[Rebased for rpi-userland-a1b89e91f393c7134b4cdc36431f863bb3333163]
+-Signed-off-by: Peter Seiderer <ps.report@gmx.net>
+----
+- interface/vmcs_host/vc_vchi_dispmanx.c | 1 -
+- 1 file changed, 1 deletion(-)
+-
+-diff --git a/interface/vmcs_host/vc_vchi_dispmanx.c b/interface/vmcs_host/vc_vchi_dispmanx.c
+-index 133e86d..0c7873c 100755
+---- a/interface/vmcs_host/vc_vchi_dispmanx.c
+-+++ b/interface/vmcs_host/vc_vchi_dispmanx.c
+-@@ -1306,7 +1306,6 @@ static void *dispmanx_notify_func( void *arg ) {
+-             // Decrement the use count - the corresponding "use" is in vc_dispmanx_update_submit.
+-             vchi_service_release(dispmanx_client.notify_handle[0]);
+-             if (dispmanx_client.update_callback ) {
+--               vcos_assert( dispmanx_client.pending_update_handle == handle);
+-                dispmanx_client.update_callback(handle, dispmanx_client.update_callback_param);
+-             }
+-          } else {
+--- 
+-2.8.1
+-
+diff -Naru rpi-userland/0003-Disable-Werror-everywhere.patch rpi-userland2/0003-Disable-Werror-everywhere.patch
+--- buildroot/package/rpi-userland/0003-Disable-Werror-everywhere.patch	2019-12-14 23:47:45.428115000 +0100
++++ buildroot/package/rpi-userland/0003-Disable-Werror-everywhere.patch	1970-01-01 01:00:00.000000000 +0100
+@@ -1,174 +0,0 @@
+-From 8275a380658070336df0c404f0ff585d27681836 Mon Sep 17 00:00:00 2001
+-From: Peter Seiderer <ps.report@gmx.net>
+-Date: Thu, 22 Sep 2016 22:59:11 +0200
+-Subject: [PATCH] Disable Werror everywhere
+-
+-With gcc-5.1, some constructs that were previously accepted (but wrong)
+-are now considered warnings, and thus -Werror makes them errors.
+-
+-Ditch -Werror altoghether.
+-
+-Signed-off-by: "Yann E. MORIN" <yann.morin.1998@free.fr>
+-
+-[Rebased for rpi-userland-a1b89e91f393c7134b4cdc36431f863bb3333163]
+-Signed-off-by: Peter Seiderer <ps.report@gmx.net>
+-
+-[Rebased for rpi-userland-8f0abfb07b96e7ee85f46e59d895014ec5e25f5e]
+-Signed-off-by: Peter Seiderer <ps.report@gmx.net>
+----
+- host_applications/android/apps/vidtex/CMakeLists.txt | 2 +-
+- host_applications/linux/apps/gencmd/CMakeLists.txt   | 2 +-
+- host_applications/linux/apps/raspicam/CMakeLists.txt | 2 +-
+- host_applications/linux/apps/smem/CMakeLists.txt     | 2 +-
+- host_applications/linux/libs/bcm_host/CMakeLists.txt | 2 +-
+- host_applications/linux/libs/sm/CMakeLists.txt       | 2 +-
+- interface/mmal/CMakeLists.txt                        | 2 +-
+- interface/vcos/CMakeLists.txt                        | 2 +-
+- interface/vcos/pthreads/CMakeLists.txt               | 2 +-
+- interface/vmcs_host/CMakeLists.txt                   | 2 +-
+- interface/vmcs_host/linux/vcfiled/CMakeLists.txt     | 2 +-
+- 11 files changed, 11 insertions(+), 11 deletions(-)
+-
+-diff --git a/host_applications/android/apps/vidtex/CMakeLists.txt b/host_applications/android/apps/vidtex/CMakeLists.txt
+-index 6d66d69..06a3192 100644
+---- a/host_applications/android/apps/vidtex/CMakeLists.txt
+-+++ b/host_applications/android/apps/vidtex/CMakeLists.txt
+-@@ -1,6 +1,6 @@
+- cmake_minimum_required(VERSION 2.8)
+- 
+--SET(COMPILE_DEFINITIONS -Werror -Wall)
+-+SET(COMPILE_DEFINITIONS -Wall)
+- 
+- # Set --no-as-needed to stop the linker discarding mmal_vc_client
+- # as it can't see that the constructor registers a load of functionality
+-diff --git a/host_applications/linux/apps/gencmd/CMakeLists.txt b/host_applications/linux/apps/gencmd/CMakeLists.txt
+-index f95d1a1..034bf20 100644
+---- a/host_applications/linux/apps/gencmd/CMakeLists.txt
+-+++ b/host_applications/linux/apps/gencmd/CMakeLists.txt
+-@@ -4,7 +4,7 @@ if (WIN32)
+-    set(VCOS_PLATFORM win32)
+- else ()
+-    set(VCOS_PLATFORM pthreads)
+--   add_definitions(-Wall -Werror)
+-+   add_definitions(-Wall )
+- endif ()
+- 
+- include_directories( ../../../.. 
+-diff --git a/host_applications/linux/apps/raspicam/CMakeLists.txt b/host_applications/linux/apps/raspicam/CMakeLists.txt
+-index 42636e8..d778f09 100644
+---- a/host_applications/linux/apps/raspicam/CMakeLists.txt
+-+++ b/host_applications/linux/apps/raspicam/CMakeLists.txt
+-@@ -1,7 +1,7 @@
+- 
+- # raspistill/raspivid/raspiyuv
+- 
+--SET(COMPILE_DEFINITIONS -Werror)
+-+SET(COMPILE_DEFINITIONS )
+- 
+- # Set --no-as-needed to stop the linker discarding mmal_vc_client
+- # as it can't see that the constructor registers a load of functionality
+-diff --git a/host_applications/linux/apps/smem/CMakeLists.txt b/host_applications/linux/apps/smem/CMakeLists.txt
+-index 0fa8328..f0d1e77 100644
+---- a/host_applications/linux/apps/smem/CMakeLists.txt
+-+++ b/host_applications/linux/apps/smem/CMakeLists.txt
+-@@ -4,7 +4,7 @@ get_filename_component (VIDEOCORE_ROOT ../../../.. ABSOLUTE)
+- include (${VIDEOCORE_ROOT}/makefiles/cmake/global_settings.cmake)
+- 
+- if (NOT WIN32)
+--   add_definitions(-Wall -Werror)
+-+   add_definitions(-Wall )
+- endif ()
+- 
+- include_directories (
+-diff --git a/host_applications/linux/libs/bcm_host/CMakeLists.txt b/host_applications/linux/libs/bcm_host/CMakeLists.txt
+-index 2154e53..c23779b 100644
+---- a/host_applications/linux/libs/bcm_host/CMakeLists.txt
+-+++ b/host_applications/linux/libs/bcm_host/CMakeLists.txt
+-@@ -3,7 +3,7 @@ if (WIN32)
+-    set(VCOS_PLATFORM win32)
+- else ()
+-    set(VCOS_PLATFORM pthreads)
+--   add_definitions(-Wall -Werror)
+-+   add_definitions(-Wall )
+- endif ()
+- 
+- # set this as we want all the source of vchostif to be available in libbcm_host
+-diff --git a/host_applications/linux/libs/sm/CMakeLists.txt b/host_applications/linux/libs/sm/CMakeLists.txt
+-index 5ce5aca..02aea7c 100644
+---- a/host_applications/linux/libs/sm/CMakeLists.txt
+-+++ b/host_applications/linux/libs/sm/CMakeLists.txt
+-@@ -3,7 +3,7 @@ if (WIN32)
+-    set(VCOS_PLATFORM win32)
+- else ()
+-    set(VCOS_PLATFORM pthreads)
+--   add_definitions(-Wall -Werror)
+-+   add_definitions(-Wall )
+- endif ()
+- 
+- include_directories( ../../../..
+-diff --git a/interface/mmal/CMakeLists.txt b/interface/mmal/CMakeLists.txt
+-index 37ae757..78b24a9 100644
+---- a/interface/mmal/CMakeLists.txt
+-+++ b/interface/mmal/CMakeLists.txt
+-@@ -3,7 +3,7 @@ if (NOT DEFINED LIBRARY_TYPE)
+- set(LIBRARY_TYPE SHARED)
+- endif (NOT DEFINED LIBRARY_TYPE)
+- 
+--add_definitions(-Wall -Werror)
+-+add_definitions(-Wall )
+- 
+- add_library(mmal SHARED util/mmal_util.c)
+- 
+-diff --git a/interface/vcos/CMakeLists.txt b/interface/vcos/CMakeLists.txt
+-index 23a8d72..988b104 100644
+---- a/interface/vcos/CMakeLists.txt
+-+++ b/interface/vcos/CMakeLists.txt
+-@@ -43,7 +43,7 @@ foreach (header ${HEADERS})
+- endforeach ()
+- 
+- if (CMAKE_COMPILER_IS_GNUCC)
+--   add_definitions (-ggdb -Werror -Wall)
+-+   add_definitions (-ggdb  -Wall)
+- endif ()
+- 
+- if (CMAKE_COMPILER_2005)
+-diff --git a/interface/vcos/pthreads/CMakeLists.txt b/interface/vcos/pthreads/CMakeLists.txt
+-index 1d81ca3..b35cd8e 100644
+---- a/interface/vcos/pthreads/CMakeLists.txt
+-+++ b/interface/vcos/pthreads/CMakeLists.txt
+-@@ -1,7 +1,7 @@
+- # MSVC5 does not fully support C99, enabling declaration-after-statement
+- # warnings allows a common MSVC5 build error to be detected in Linux builds.
+- if (CMAKE_COMPILER_IS_GNUCC)
+--   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -Wdeclaration-after-statement")
+-+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall  -Wdeclaration-after-statement")
+-    add_definitions (-D_GNU_SOURCE)
+- endif ()
+- 
+-diff --git a/interface/vmcs_host/CMakeLists.txt b/interface/vmcs_host/CMakeLists.txt
+-index fde18da..802c158 100755
+---- a/interface/vmcs_host/CMakeLists.txt
+-+++ b/interface/vmcs_host/CMakeLists.txt
+-@@ -2,7 +2,7 @@
+- # interface/vmcs_host
+- 
+- # not working in release build
+--# add_definitions(-Werror)
+-+# add_definitions()
+- 
+- # vc_vchi_gencmd.c has a type-punning problem in vc_gencmd_read_response
+- add_definitions(-fno-strict-aliasing)
+-diff --git a/interface/vmcs_host/linux/vcfiled/CMakeLists.txt b/interface/vmcs_host/linux/vcfiled/CMakeLists.txt
+-index aed0e83..d834b3f 100644
+---- a/interface/vmcs_host/linux/vcfiled/CMakeLists.txt
+-+++ b/interface/vmcs_host/linux/vcfiled/CMakeLists.txt
+-@@ -1,5 +1,5 @@
+- 
+--add_definitions(-Werror)
+-+add_definitions()
+- 
+- # vcfiled - serves files to videocore. used for media handlers from
+- # OpenMAX/IL and loading VLLs.
+--- 
+-2.19.0
+-
+diff -Naru rpi-userland/0004-host-applications-disable-missing-applications.patch rpi-userland2/0004-host-applications-disable-missing-applications.patch
+--- buildroot/package/rpi-userland/0004-host-applications-disable-missing-applications.patch	2019-12-14 23:47:45.428115000 +0100
++++ buildroot/package/rpi-userland/0004-host-applications-disable-missing-applications.patch	1970-01-01 01:00:00.000000000 +0100
+@@ -1,34 +0,0 @@
+-From c8d2c332da2a03ed80d62628bbf54187a66f49b6 Mon Sep 17 00:00:00 2001
+-From: "Yann E. MORIN" <yann.morin.1998@free.fr>
+-Date: Fri, 24 Jul 2015 20:20:33 +0200
+-Subject: [PATCH] host-applications: disable missing applications
+-
+-Those applications are missing from the public rpi-firmware package, so
+-do not even try to build them.
+-
+-Signed-off-by: "Yann E. MORIN" <yann.morin.1998@free.fr>
+-
+-[Rebased for rpi-userland-a1b89e91f393c7134b4cdc36431f863bb3333163]
+-Signed-off-by: Peter Seiderer <ps.report@gmx.net>
+----
+- host_applications/linux/CMakeLists.txt | 3 ---
+- 1 file changed, 3 deletions(-)
+-
+-diff --git a/host_applications/linux/CMakeLists.txt b/host_applications/linux/CMakeLists.txt
+-index 5a648e7..83bb66e 100644
+---- a/host_applications/linux/CMakeLists.txt
+-+++ b/host_applications/linux/CMakeLists.txt
+-@@ -12,10 +12,7 @@ add_subdirectory(apps/dtoverlay)
+- add_subdirectory(apps/dtmerge)
+- 
+- if(ALL_APPS)
+-- add_subdirectory(apps/vcdbg)
+-- add_subdirectory(libs/elftoolchain)
+-  # add_subdirectory(apps/smct)
+-- add_subdirectory(apps/edid_parser)
+-  add_subdirectory(apps/hello_pi)
+- endif()
+- 
+--- 
+-2.8.1
+-
+diff -Naru rpi-userland/0005-dtmerge-add-missing-include-for-va_list.patch rpi-userland2/0005-dtmerge-add-missing-include-for-va_list.patch
+--- buildroot/package/rpi-userland/0005-dtmerge-add-missing-include-for-va_list.patch	2019-12-14 23:47:45.428115000 +0100
++++ buildroot/package/rpi-userland/0005-dtmerge-add-missing-include-for-va_list.patch	1970-01-01 01:00:00.000000000 +0100
+@@ -1,34 +0,0 @@
+-From 1ffed0e8601afb7e65545bd545772edd0fccc404 Mon Sep 17 00:00:00 2001
+-From: Peter Seiderer <ps.report@gmx.net>
+-Date: Sat, 23 Apr 2016 17:48:13 +0200
+-Subject: [PATCH] dtmerge: add missing include for va_list
+-MIME-Version: 1.0
+-Content-Type: text/plain; charset=UTF-8
+-Content-Transfer-Encoding: 8bit
+-
+-Fixes compile error with uclibc-1.0.14:
+-
+-  In file included from rpi-userland-52eca998aa43f278314579dba4798a3fe1da46c3/host_applications/linux/apps/dtmerge/dtmerge.c:32:0:
+-  rpi-userland-52eca998aa43f278314579dba4798a3fe1da46c3/helpers/dtoverlay/dtoverlay.h:65:54: error: unknown type name ‘va_list’
+-                                     const char *fmt, va_list args);
+-
+-Signed-off-by: Peter Seiderer <ps.report@gmx.net>
+----
+- host_applications/linux/apps/dtmerge/dtmerge.c | 1 +
+- 1 file changed, 1 insertion(+)
+-
+-diff --git a/host_applications/linux/apps/dtmerge/dtmerge.c b/host_applications/linux/apps/dtmerge/dtmerge.c
+-index 9243da1..2ac8d39 100644
+---- a/host_applications/linux/apps/dtmerge/dtmerge.c
+-+++ b/host_applications/linux/apps/dtmerge/dtmerge.c
+-@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- #include <stdio.h>
+- #include <stdlib.h>
+- #include <libfdt.h>
+-+#include <stdarg.h>
+- 
+- #include "dtoverlay.h"
+- 
+--- 
+-2.8.1
+-
+diff -Naru rpi-userland/rpi-userland.hash rpi-userland2/rpi-userland.hash
+--- buildroot/package/rpi-userland/rpi-userland.hash	2019-12-14 23:47:45.428115000 +0100
++++ buildroot/package/rpi-userland/rpi-userland.hash	2019-12-14 23:28:08.845014000 +0100
+@@ -1,3 +1,3 @@
+ # Locally computed
+-sha256 9424ffa45ef888fb61483c63fd66532c1c648e071fea72c93762efbb3c2a8669 rpi-userland-e5803f2c986cbf8c919c60278b3231dcdf4271a6.tar.gz
++sha256 3ecfbfde62f3116b65e7ec3ddafbfef031715746417c16a5153dbaae2aae877c rpi-userland-7d3c6b9f4c3ddeecefdeb2b882bada74a235249b.tar.gz
+ sha256 bee6f1249175683d8610651706e1aa7dffcbfd3f9c4c05bc1e5ab34f313c2db5 LICENCE
+diff -Naru rpi-userland/rpi-userland.mk rpi-userland2/rpi-userland.mk
+--- buildroot/package/rpi-userland/rpi-userland.mk	2019-12-14 23:47:45.428115000 +0100
++++ buildroot/package/rpi-userland/rpi-userland.mk	2019-12-14 23:33:47.260083000 +0100
+@@ -4,7 +4,7 @@
+ #
+ ################################################################################
+ 
+-RPI_USERLAND_VERSION = e5803f2c986cbf8c919c60278b3231dcdf4271a6
++RPI_USERLAND_VERSION = 7d3c6b9f4c3ddeecefdeb2b882bada74a235249b
+ RPI_USERLAND_SITE = $(call github,raspberrypi,userland,$(RPI_USERLAND_VERSION))
+ RPI_USERLAND_LICENSE = BSD-3-Clause
+ RPI_USERLAND_LICENSE_FILES = LICENCE
+@@ -56,7 +56,7 @@
+ define RPI_USERLAND_POST_TARGET_CLEANUP
+ 	rm -f $(TARGET_DIR)/etc/init.d/vcfiled
+ 	rm -f $(TARGET_DIR)/usr/share/install/vcfiled
+-	rmdir --ignore-fail-on-non-empty $(TARGET_DIR)/usr/share/install
++	rm -f $(TARGET_DIR)/usr/share/install
+ 	rm -Rf $(TARGET_DIR)/usr/src
+ endef
+ RPI_USERLAND_POST_INSTALL_TARGET_HOOKS += RPI_USERLAND_POST_TARGET_CLEANUP
