@@ -317,7 +317,7 @@ BR2_TOOLCHAIN_BUILDROOT_CXX=y
 # BR2_TOOLCHAIN_BUILDROOT_FORTRAN is not set
 # BR2_GCC_ENABLE_LTO is not set
 # BR2_GCC_ENABLE_OPENMP is not set
-BR2_GCC_ENABLE_GRAPHITE=y
+# BR2_GCC_ENABLE_GRAPHITE is not set
 BR2_PACKAGE_HOST_GDB_ARCH_SUPPORTS=y
 
 #
@@ -341,7 +341,7 @@ BR2_TOOLCHAIN_HAS_UCONTEXT=y
 BR2_TOOLCHAIN_SUPPORTS_PIE=y
 BR2_TOOLCHAIN_EXTRA_LIBS=""
 BR2_USE_MMU=y
-BR2_TARGET_OPTIMIZATION="-march=armv6zk -mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfpu=vfp -fipa-pta -floop-interchange -ftree-loop-distribution -floop-strip-mine -floop-block"
+BR2_TARGET_OPTIMIZATION="-march=armv6zk -mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfpu=vfp -fipa-pta"
 BR2_TARGET_LDFLAGS=""
 # BR2_ECLIPSE_REGISTER is not set
 BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_0=y
