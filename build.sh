@@ -17,17 +17,13 @@ S_NETWORK_COUNTRY="gb"
 S_NETWORK_SSID="YOUR_SSID"
 S_NETWORK_PASSWORD="YOUR_LONG_AND_SECURE_PASSWORD"
 
+# Check board compatibility
 function check-board {
 	if [ $1 == "raspberrypi0w" ]; then
 		export BOARD=$1
 	else
 		echo "Board not recognized or supported"
 	fi
-}
-
-# Clean copy
-function get-buildroot {
-	rm -rf buildroot
 }
 
 # Set specific board configs
@@ -41,6 +37,7 @@ function set-board-configs {
 	echo "sh ../board/configure.sh" >> "buildroot/board/${BOARD}/post-build.sh"
 }
 
+# Apply custom board patches, if there are any
 function apply-patches {
 	echo "Applying patches"
 
@@ -69,7 +66,12 @@ function set-configs {
 	sed -i "s/\(psk=\).*/\1\"$S_NETWORK_PASSWORD\"/" "board/common/etc/wpa_supplicant.conf"
 }
 
-function get-image {
+# Clean buildroot clone
+function clean-buildroot {
+	rm -rf buildroot
+}
+
+function move-image {
 	sleep 1
 
 	[ -f "output/images/sdcard.img" ] && mv "output/images/sdcard.img" "../sentry.img"
@@ -96,7 +98,7 @@ function compile {
 	make ${BOARD}_defconfig
 	make V=1
 
-	get-image
+	move-image
 }
 
 function display-help {
@@ -124,14 +126,14 @@ do
 			fi
 			;;
 		d)
-			get-buildroot
+			clean-buildroot
 			;;
 		m)
 			check-board $OPTARG
 
 			if [ ! -z $BOARD ]; then
 				cd buildroot
-				make && get-image
+				make && move-image
 			fi
 
 			exit 0
