@@ -8,6 +8,7 @@
 -      "rpi-firmware/start.elf",
 +      "rpi-firmware/fixup_x.dat",
 +      "rpi-firmware/start_x.elf",
++      "rpi-firmware/wpa_supplicant.conf",
        "rpi-firmware/overlays",
        "zImage"
      }

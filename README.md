@@ -14,7 +14,8 @@ Once the boot is finished, a camera streaming will be active on 5001 port.
 
 ### How to Compile
 
-Remember to set your **WiFi** and **Timezone** settings inside build.sh before compiling. This is mandatory if you want an headless start.
+Remember to set your **WiFi** settings inside build.sh before compiling, or just edit the wpa_supplicant.conf in the /boot partition.
+This is mandatory if you want an headless start.
 
 Your first build:
 ```sh
@@ -43,7 +44,6 @@ The steps for RaspberryPi 0 W:
 
 ### TO-DO
 
-- Allow the configuration of wpa_supplicant.conf from /boot partition
 - Support more boards
 
 ### Buildroot

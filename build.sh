@@ -61,9 +61,9 @@ function set-configs {
 	sed -i "s#\(BR2_TARGET_LOCALTIME=\).*#\1\"$S_LOCALTIME\"#" "board/${BOARD}/configs/${BOARD}_defconfig"
 
 	# wpa_supplicant.conf
-	sed -i "s/\(country=\).*/\1$S_NETWORK_COUNTRY/" "board/common/etc/wpa_supplicant.conf"
-	sed -i "s/\(ssid=\).*/\1\"$S_NETWORK_SSID\"/" "board/common/etc/wpa_supplicant.conf"
-	sed -i "s/\(psk=\).*/\1\"$S_NETWORK_PASSWORD\"/" "board/common/etc/wpa_supplicant.conf"
+	sed -i "s/\(country=\).*/\1$S_NETWORK_COUNTRY/" "board/common/wpa_supplicant.conf"
+	sed -i "s/\(ssid=\).*/\1\"$S_NETWORK_SSID\"/" "board/common/wpa_supplicant.conf"
+	sed -i "s/\(psk=\).*/\1\"$S_NETWORK_PASSWORD\"/" "board/common/wpa_supplicant.conf"
 }
 
 # Clean buildroot clone
