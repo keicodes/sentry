@@ -1,1 +1,1 @@
-dwc_otg.fiq_fix_enable=1 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait elevator=bfq
+dwc_otg.fiq_fix_enable=1 console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait elevator=bfq ipv6. disable=1
