@@ -1,0 +1,12 @@
+diff -Naru rng-tools/S21rngd rng-tools2/S21rngd
+--- buildroot/package/rng-tools/S21rngd	2019-12-20 03:25:34.289278000 +0100
++++ buildroot/package/rng-tools/S21rngd	2019-12-20 04:41:15.066615780 +0100
+@@ -2,7 +2,7 @@
+ 
+ NAME="rngd"
+ DAEMON="/usr/sbin/${NAME}"
+-DAEMON_ARGS=""
++DAEMON_ARGS="-q"
+ CFG_FILE="/etc/default/${NAME}"
+ PID_FILE="/var/run/${NAME}.pid"
+ 
